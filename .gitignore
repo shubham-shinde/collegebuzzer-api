@@ -1,0 +1,8 @@
+node_modules
+.Ds_store
+package-lock.json
+.vscode
+yarn-error.log
+yarn.lock
+package-lock.json
+dump.rdb
