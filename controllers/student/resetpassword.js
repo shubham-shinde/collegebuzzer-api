@@ -2,7 +2,7 @@ import { Students } from '../../mongoose/mongoosConfig';
 import jwt from 'jsonwebtoken';
 import sendSetPasswordMail from '../../services/mailService'
 // import bycrpt from 'bcryptjs'
-import { SESSION_SECRET, SERVER_URL } from '../../appconfig';
+import { SESSION_SECRET, SERVER_URL, ROLES } from '../../appconfig';
 // import path from 'path'
 
 export default {
@@ -17,15 +17,15 @@ function _get (req, res, next) {
             if(doc) {
                 console.log(doc)
                 const token = jwt.sign(
-                    { mail: req.session.mail, branch: doc.branch, year: doc.year },
+                    { mail: req.session.mail,role: ROLES[1], branch: doc.branch, year: doc.year },
                     SESSION_SECRET
                 );
-                const link = SERVER_URL+'/setpassword/'+token.toString()
+                const link = SERVER_URL+'/setpassword/student/'+token.toString()
 
                 const newStuString = 'student'+token
 
                 req.store.hmset(newStuString,{
-                    mail: req.session.mail, branch: doc.branch, year: doc.year , exist: true
+                    mail: req.session.mail,role: ROLES[0], branch: doc.branch, year: doc.year , exist: true
                     },
                     function (err, redisRes) {
                         if (err) {
@@ -33,10 +33,11 @@ function _get (req, res, next) {
                         }
                         req.store.expire(newStuString, 60*30)
                         sendSetPasswordMail({to: req.session.mail, link});
-                        res.status(200);
+                        res.status(201);
                         return res.json({
                             msg: 'link has been send',
                             status: true,
+                            code: 201
                         });
                     }
                 );

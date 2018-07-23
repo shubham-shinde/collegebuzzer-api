@@ -1,3 +1,4 @@
+import path from 'path';
 export default {
     get : _get
 }
@@ -5,5 +6,5 @@ export default {
 
 
 function _get(req, res) {
-    res.send("home page");
+    res.render(path.join(__dirname,'..','static', 'index.html'))
 }

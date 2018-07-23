@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { ROLES } from '../appconfig'
 // import Logger from '../../buildTools/logger';
 
 const session = (opts) => {
@@ -6,7 +7,7 @@ const session = (opts) => {
 
   const middleware = function (req, res, next) {
     console.log(req.path);
-    if (req.path === '/login' || req.path.slice(0,13) === '/setpassword/' || req.path === '/student/login' || req.path === "/student/register") {
+    if (req.path === '/' || req.path === '/login' || req.path.slice(0,13) === '/setpassword/' || req.path === '/student/login' || req.path === "/student/register") {
       return next();
     }
 
@@ -26,13 +27,13 @@ const session = (opts) => {
         return next(err);
       }
 
-      const id = user.id;
-      const mode = user.mode;
+      const Id = user.Id;
+      const role = user.role;
 
-      const sessionString = "fucked_up_students"+ id ;
+      const sessionString = "fucked_up_students"+ Id ;
 
-      if (typeof (mode) === undefined) {
-        return next(new Error('mode not found'));
+      if (typeof (role) === undefined) {
+        return next(new Error('role not found'));
       }
 
       req.store.hgetall(sessionString, function (err, value) {
@@ -41,13 +42,22 @@ const session = (opts) => {
         }
 
 
-        console.log(value)
-        req.session = {};
-        req.session.userId = id;
-        req.session.role = value.role;
-        req.session.userId = value.userId;
-        req.session.mail = value.mail;
-        next();
+        if(role === ROLES[0]) {
+          req.session = {};
+          req.session.Id = Id;
+          req.session.role = role;
+          req.session.year = value.year
+          req.session.branch = value.branch
+          req.session.mail = value.mail;
+          next();
+        }
+        else if (role === ROLES[1]) {
+          req.session = {};
+          req.session.Id = Id;
+          req.session.role = role;
+          req.session.f_name = value.f_name;
+          req.session.mail = value.mail;
+        }
       });
     });
   };

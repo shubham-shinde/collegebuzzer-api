@@ -8,6 +8,20 @@ export const DB_PORT = 27017;
 export const MAIL_SERVICE_MAIL = "shubham@cryptospacex.com";
 export const MAIL_SERVICE_PASSWORD = "vara4321";
 
+export const ROLES = [
+    'student',
+    'club',
+    'admin'
+]
+
+export const AWS_S3 = {
+    accessKeyId: 'AKIAIS2F44AF2TR2PFWA', 
+    secretAccessKey:'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', 
+    region: 'ap-south-1'
+}
+
+export const AWS_S3_LINK = 'https://s3.ap-south-1.amazonaws.com/photosfortheapp/'
+
 // roles
 //     quest
 //     student

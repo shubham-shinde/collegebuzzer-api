@@ -1,7 +1,7 @@
 import { Students, Branchs } from '../../mongoose/mongoosConfig';
 import sendSetPasswordMail from '../../services/mailService';
 import jwt from 'jsonwebtoken';
-import { SESSION_SECRET, SERVER_URL } from '../../appconfig';
+import { SESSION_SECRET, SERVER_URL, ROLES } from '../../appconfig';
 
 export default {
     post : _post
@@ -27,7 +27,12 @@ function _post (req, res, next) {
     var errors = req.validationErrors();
 
     if (errors) {
-        res.json({error: errors});
+        res.status(406)
+        res.json({
+            error: errors,
+            status: false,
+            code: 406
+        });
         return;
     }
     else {
@@ -56,14 +61,17 @@ function _post (req, res, next) {
                         return res.json({
                             msg: 'link has been send',
                             status: true,
+                            status: 200
                         });
                     }
                 );
             }
             else {
+                res.status(404)
                 res.json({
                     msg: 'Email id already exists',
-                    status: false
+                    status: false,
+                    status: 404
                 })
             }
         })

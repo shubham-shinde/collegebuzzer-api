@@ -11,21 +11,26 @@ import path from 'path';
 
 import redisClient from './middleware/redis';
 import session from './middleware/session';
-import { SESSION_SECRET } from './appconfig'
+import { SESSION_SECRET, SERVER_PORT } from './appconfig'
 
 
 import router from './router/router';
 
-const PORT = '3000';
+const PORT = SERVER_PORT;
 
 const app = express();
-const upload = multer();
+const upload = multer({
+    dest: 'uploads/'
+});
 
 app.server = http.createServer(app);
 
 //clears the console.
 app.use(clearConsole);
 app.use(logger('dev'));
+
+//for form data.
+app.use(upload.array('pic'))
 
 //middleware with nothing
 app.use((req, res, next) => {
@@ -37,9 +42,6 @@ app.use(compression())
 
 //for cross-origin-resource-sharing
 app.use(cors());
-
-//for form data.
-app.use(upload.array())
 
 //for input validation
 app.use(validator());

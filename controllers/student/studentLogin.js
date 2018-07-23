@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { SESSION_SECRET } from '../../appconfig'
+import { SESSION_SECRET, ROLES } from '../../appconfig'
 
 import { Students } from '../../mongoose/mongoosConfig'
 
@@ -30,16 +30,24 @@ function _post (req, res, next) {
 
             if(!student) {
                 res.status(404);
-                return res.json({ msg : "no user found"})
+                return res.json({
+                    msg : "no user found",
+                    status: false,
+                    code : 404
+                })
             }
 
             bcrypt.compare(login_detail.password, student.password).then((isValid) => {
                 if(!isValid) {
                     res.status(401)
-                    return res.json({ msg: "wrong credencial" })
+                    return res.json({
+                        msg: "wrong credencial",
+                        status: false,
+                        code: 401
+                    })
                 }
                 const token = jwt.sign(
-                    { id: student._id, role: 'student' },
+                    { Id: student._id, role: ROLES[0] },
                     SESSION_SECRET
                 );
                 const sessionString = "fucked_up_students"+student._id ;
@@ -50,11 +58,13 @@ function _post (req, res, next) {
                         "mail",
                         student.mail,
                         "role",
-                        'student',
-                        "_id",
+                        ROLES[0],
+                        "Id",
                         student._id,
-                        "userId",
-                        student.userId
+                        "branch",
+                        student.branch,
+                        "year",
+                        student.year
                     ],
                     function (err, redisRes) {
                         if (err) {
