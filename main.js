@@ -2,7 +2,7 @@ import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
 import http from 'http';
-import validator from 'express-validator';
+import validator from 'express-validator/index.js';
 import bodyParser from 'body-parser';
 import ejs from 'ejs';
 import compression from 'compression';
@@ -20,7 +20,15 @@ const PORT = SERVER_PORT;
 
 const app = express();
 const upload = multer({
-    dest: 'uploads/'
+    dest: 'uploads/',
+    limits: {fileSize: '8MB'},
+    fileFilter: function (req, file, callback) {
+        var ext = path.extname(file.originalname);
+        if(ext !== '.png' && ext !== '.jpg' && ext !==".JPG"  && ext !==".JPEG" && ext !== '.gif' && ext !== '.jpeg') {
+            return callback(new Error('Only images are acceptable'))
+        }
+        callback(null, true)
+    },
 });
 
 app.server = http.createServer(app);
@@ -50,7 +58,7 @@ app.use(express.static(path.join(__dirname,'static')))
 
 //to read from body of request.
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json({extended: false}));
+app.use(bodyParser.json({extended: false, limit: '8MB'}));
 
 app.use(redisClient());
 app.use(session({ secret: SESSION_SECRET }))
@@ -59,8 +67,9 @@ app.use(session({ secret: SESSION_SECRET }))
 app.engine('html', ejs.renderFile);
 app.set('view engine', 'html');
 
+// app.use(clearConsole)
 function clearConsole(req,res,next){
-    console.log(req.body);
+    console.log(req.session);
     //console.log('\x1Bc');
     next();
 }

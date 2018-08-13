@@ -18,6 +18,7 @@ export default ({to,link}) => {
         });
 
         // setup email data with unicode symbols
+        console.log(link)
         let mailOptions = {
             from: '"shubham contact" <'+MAIL_SERVICE_MAIL+'>', // sender address
             to: to, // list of receivers

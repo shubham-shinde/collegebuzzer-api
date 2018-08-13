@@ -1,4 +1,4 @@
-import { Branchs } from './../mongoosConfig';
+import { Branchs } from '../../mongoose/mongoosConfig';
 
 export default {
     post : _post

@@ -11,7 +11,8 @@ export const MAIL_SERVICE_PASSWORD = "vara4321";
 export const ROLES = [
     'student',
     'club',
-    'admin'
+    'admin',
+    'guest'
 ]
 
 export const AWS_S3 = {

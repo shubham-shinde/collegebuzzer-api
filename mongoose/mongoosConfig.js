@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-mongoose.connect("mongodb://localhost/app", function(err) {
+mongoose.connect("mongodb://localhost/app2", function(err) {
     if(err) 
         console.log("error in connection mongodb::::"+ err);
     else
@@ -10,73 +10,74 @@ mongoose.connect("mongodb://localhost/app", function(err) {
 const { Schema } = mongoose;
 
 const postschema = Schema({
-    f_name: { type:String, required: true },
-    m_name: { type:String },
-    l_name: { type:String, required: true },
+    name: { type:String, required: true },
     p_pic : { type: String, required: true },
     n_pics: { type:Number, required: true },
     userIntro: { type: String }, 
     Id : { type: Schema.Types.ObjectId, ref: 'students' },
     text: { type: String },
-    time: { type: Date, default: Date.now , required: true },
-    likes: { type: Number, required: true, unique: false },
-    liked_by: [{ type: Schema.Types.ObjectId, ref: 'students' }],
-    is_auth: { type: Boolean , required: true }
+    likes: [{ type: Schema.Types.ObjectId, ref: 'students' }],
+    is_auth: { type: Boolean , required: true },
+    only_for_stu: { type: Boolean , required: true },
 });
 
-export const Posts = mongoose.model("Post", postschema, "posts");
+export const STU_POSTS = mongoose.model("stu_post", postschema, "stu_posts");
+
+export const CLUB_POSTS = mongoose.model("club_post", postschema, "club_posts");
 
 const studentschema = Schema({
-    rollno: { type:Number },
+    clgId: { type:String, unique: true },
     year : { type:Number, required: true },
     branch : { type: String, required: true },
-    userID: { type:String, required: true, index: true },
+    sec : { type: String, required: true },
     gen: { type:String, required: true }, //true == Male
-    f_name: { type:String, required: true },
-    m_name: { type:String },
-    l_name: { type:String, required: true },
+    name: { type:String, required: true },
+    theme: { type: String },
     dob : { type: Date, required: true },
-    m_no : { type: Number , required: true },
     mail : { type: String, required: true },
-    clubs : [{ type: Schema.Types.ObjectId, ref: 'clubs' }],
     p_pic: { type:String },
     password: { type: String, required: true },
-    h_town: { type:String , required: true },
     userIntro: { type: String, required: true }, //short intro like 2nd yr IT
     bio: { type: String }, //write about yourself
-    created_at : { type: Date, required: true },
-    h_posts : [{ type: Schema.Types.ObjectId, ref: 'posts' }],
+    h_posts : [{ type: Schema.Types.ObjectId, ref: 'stu_posts' }],
     last_logged_in: { type: Date },
     is_auth: { type: Boolean , required: true }
 });
 
+studentschema.index({f_name: 'text', m_name: 'text', l_name: 'text'})
+
 export const Students = mongoose.model("Student", studentschema, 'students')
 
-const brancheschema = Schema({
-    name : { type: String , required: true },
-    year: { type: Number , required: true },
-    t_stu : { type: Number , required: true },
-    A : [{ type: Schema.Types.ObjectId, ref: 'Student' }],
-    B : [{ type: Schema.Types.ObjectId, ref: 'Student' }],
-    no_A : { type: Number , required: true },
-    no_B : { type: Number , required: true },
+const guestschema = Schema({
+    name: { type:String, required: true },
+    mail : { type: String, required: true },
+    password: { type: String, required: true },
+    last_logged_in: { type: Date },
+    is_auth: { type: Boolean , required: true }
 });
 
-export const Branchs = mongoose.model("Branch", brancheschema, 'branches');
+export const Guests = mongoose.model("Guest", guestschema, 'guests')
 
 const clubSchema = Schema({
-    f_name : { type: String , required: true },
-    heads : [{ type: Schema.Types.ObjectId, ref: 'Student' }],
-    members : [{ type: Schema.Types.ObjectId, ref: 'Student' }],
+    name : { type: String , required: true },
     password: { type: String, required: true },
-    h_posts : [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+    h_posts : [{ type: Schema.Types.ObjectId, ref: 'club_posts' }],
     mail : { type: String, required: true },
     p_pic : { type:String },
     bio :  { type: String },
+    heads : [{
+        Id : { type: String, required: true },
+        name : { type: String, required: true },
+        p_pic : { type: String, required: true },
+        userIntro : { type: String, required: true },
+    }],
+    theme :  { type: String },
+    is_auth: { type: Boolean , required: true }
 });
 
-export const Clubs = mongoose.model("Club", clubSchema, 'clubs');
+clubSchema.index({f_name: 'text', m_name: 'text'})
 
+export const Clubs = mongoose.model("Club", clubSchema, 'clubs');
 
 const confSchema = Schema({
     text: { type: String, required: true },
@@ -85,6 +86,16 @@ const confSchema = Schema({
     year : { type:Number, required: true },
     branch : { type: String, required: true },
     time: { type: Date, default: Date.now , required: true },
+    auth_by: { type: String }
 });
 
 export const Confessions = mongoose.model("Conf", confSchema, 'confs');
+
+const adminSchema = Schema({
+    name : { type: String , required: true },
+    password: { type: String, required: true },
+    mail : { type: String, required: true },
+    is_auth: { type: Boolean , required: true }
+});
+
+export const Admins = mongoose.model("Admin", adminSchema, 'admins');

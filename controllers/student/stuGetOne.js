@@ -1,0 +1,67 @@
+import { Students } from '../../mongoose/mongoosConfig';
+
+export default {
+    get : _get
+}
+
+function _get (req, res) {
+    const _id = req.params._id;
+    console.log(_id)
+    Students.findOne({_id}).exec((err, student) => {
+        if(err) {
+            next(err)
+        }
+        console.log(student)
+        if(!student) {
+            res.status(400)
+            return res.json({
+                msg : 'student is not available',
+                status: true,
+                code: 400
+            })
+        }
+
+        // const posts = student.h_posts.map((postf) => {
+        //     const pics = createPicLink(postf.n_pics, postf._id)
+        //     return {...postf, pics}
+        // })
+
+        const send_stu = {
+            _id : student._id,
+            name : student.name,
+            theme : student.theme,
+            p_pic : student.p_pic,
+            userIntro : student.userIntro,
+            bio : student.bio,
+            h_posts : student.h_posts
+        }
+        res.status(200)
+        res.json({
+            msg : 'this is awesome',
+            status: true,
+            code: 200,
+            student: send_stu
+        })
+    })    
+}
+
+function createPicLink(no, id) {
+    const pics = []
+    for(var i=0; i< no; i++) {
+        pics.push({
+            pre: AWS_S3_LINK+'posts/'+id+'pre'+'.jpg',
+            pic: AWS_S3_LINK+'posts/'+id+'.jpg'
+        })
+    }
+    return pics;
+} 
+
+function filterClubInfo(clubs) {
+    const filtered = clubs.map((club) => {
+        return {
+            name : club.name,
+            p_pic : club.p_pic,
+            _id : club._id            
+        }
+    })
+}

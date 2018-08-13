@@ -2,14 +2,14 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { SESSION_SECRET, ROLES } from '../../appconfig'
 
-import { Students } from '../../mongoose/mongoosConfig'
+import { Clubs } from '../../mongoose/mongoosConfig'
 
 export default {
     post : _post
 }
 
 function _post (req, res, next) {
-    req.checkBody('mail','wrong credential').isEmail();
+    req.checkBody('_id','wrong credential').isMongoId()
     req.checkBody('password', 'wrong credential').isLength({min: 6, max: 15})
 
     var errors = req.validationErrors();
@@ -20,11 +20,11 @@ function _post (req, res, next) {
     }
     else {
         const login_detail = {
-            f_name : req.body.mail,
+            _id: req.body._id,
             password : req.body.password
         }
 
-        Clubs.findOne({f_name: login_detail.f_name}).exec((err,student) => {
+        Clubs.findOne({_id : login_detail._id}).exec((err,student) => {
             if(err)
                 next(err)
 
@@ -60,9 +60,7 @@ function _post (req, res, next) {
                         "role",
                         ROLES[1],
                         "Id",
-                        student.f_name,
-                        "year",
-                        student.year
+                        student._id
                     ],
                     function (err, redisRes) {
                         if (err) {
@@ -73,7 +71,8 @@ function _post (req, res, next) {
                         return res.json({
                             msg: "Student successfully logged in ",
                             token: token,
-                            status: true
+                            status: true,
+                            code: 200
                         });
                     }
                 );
