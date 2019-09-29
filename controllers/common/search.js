@@ -7,7 +7,7 @@ export default {
 function _get (req, res, next) {
     const text = req.params.search;
     const regex = new RegExp(text+'|'+text.toUpperCase()+'|'+text.toLowerCase())
-    Students.find({name: regex}).exec((err, stus) => {
+    Students.find({name: regex}).limit(5).exec((err, stus) => {
         if(err) {
             return next(err);
         }
@@ -30,7 +30,7 @@ function _get (req, res, next) {
             })
         }
         else {
-            res.status(400)
+            res.status(200)
             return res.json({
                 msg: 'NO one with this name',
                 status: false,

@@ -2,10 +2,11 @@ import { MAIL_SERVICE_MAIL, MAIL_SERVICE_PASSWORD } from '../appconfig'
 import nodemailer from 'nodemailer';
 
 export default ({to,link}) => {
+    console.log('mail to be sent to '+to);
     nodemailer.createTestAccount((err, account) => {
         // create reusable transporter object using the default SMTP transport
         let transporter = nodemailer.createTransport({
-            host: 'mail.cryptospacex.com',
+            host: 'smtp.gmail.com',
             port: 587,
             secure: false, // true for 465, false for other ports
             auth: {
@@ -20,13 +21,15 @@ export default ({to,link}) => {
         // setup email data with unicode symbols
         console.log(link)
         let mailOptions = {
-            from: '"shubham contact" <'+MAIL_SERVICE_MAIL+'>', // sender address
+            from: '"CollegeBuzzer" <'+MAIL_SERVICE_MAIL+'>', // sender address
             to: to, // list of receivers
-            subject: 'first mail from nodemailer', // Subject line
+            subject: 'Set password', // Subject line
             text: 'Open link to set password', // plain text body
-            html: `This is your link to<br/>
-                click to set password<br/>
-                <h1>${link}</a></h1>` // html body
+            html: `<h1 style='color:teal;'>CollegeBuzzer</h1>
+                This is your link to<br/>
+                click the button within 50 minutes of registration.<br/>
+                <h5>After 50 minutes link will not work.</h5><br/>
+                <h2>${link}</a></h3>` // html body
         };
 
         // send mail with defined transport object

@@ -6,12 +6,10 @@ export default {
 }
 
 function _get (req, res, next) {
-    console.log(req.session);
     const _id = req.params._id;
-    if(req.session.Id === _id) {
         if(ROLES[1] === req.session.role) {            
             CLUB_POSTS.findOne({_id: _id}).exec((err, doc) => {
-            if(doc) {
+            if(doc && doc.Id == req.session.Id ) {
                 doc.remove((err, post) => {
                     if(err){
                         next(err);
@@ -45,7 +43,7 @@ function _get (req, res, next) {
         }
         if(ROLES[0] === req.session.role) {
             STU_POSTS.findOne({_id: _id}).exec((err, doc) => {
-                if(doc) {
+                if(doc && doc.Id == req.session.Id) {
                     doc.remove((err, post) => {
                         if(err){
                             next(err);
@@ -85,7 +83,6 @@ function _get (req, res, next) {
                     })
                 }
             })
-        }
     }
 
     

@@ -131,10 +131,9 @@ function _post (req, res, next) {
 
 function CreateBio(dob, branch, gen, year) {
     const date = new Date(dob);
-    return `I JUST WANT TO GRADUATE AND GET OUT OF COLLEGE
-    AS SOON AS POSSIBLE.
-    Wish me on ${date.getUTCDate}
-    I'm forced to attend lecture in the classes of ${year} st year ${branch}`
+    const dateString = date.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})
+    return `I JUST WANT TO GRADUATE
+    Wish me on ${dateString}`
 }
 
 function create_user_intro(year, branch) {

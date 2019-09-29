@@ -47,26 +47,9 @@ function _post (req, res, next) {
                     })
                 }
                 const token = jwt.sign(
-                    { Id: student._id, role: ROLES[2] },
+                    { Id: student._id, role: ROLES[2] , mail: student.mail},
                     SESSION_SECRET
                 );
-                const sessionString = "fucked_up_students"+student._id ;
-        
-                req.store.hmset(
-                    [
-                        sessionString,
-                        "mail",
-                        student.mail,
-                        "role",
-                        ROLES[2],
-                        "Id",
-                        student._id
-                    ],
-                    function (err, redisRes) {
-                        if (err) {
-                            return next(err);
-                        }
-                        console.log("redis res", redisRes);
                         res.status(200);
                         return res.json({
                             msg: "hello shubham",
@@ -74,8 +57,6 @@ function _post (req, res, next) {
                             status: true,
                             code: 200
                         });
-                    }
-                );
             }).catch(function (err) {
             next(err);
             });

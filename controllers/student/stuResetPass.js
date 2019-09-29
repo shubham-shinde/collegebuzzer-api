@@ -32,11 +32,11 @@ function _post (req, res, next) {
                         if (err) {
                             return next(err);
                         }
-                        req.store.expire(newStuString, 60*30)
+                        req.store.expire(newStuString, 60*100)
                         sendSetPasswordMail({to: mail , link});
                         res.status(201);
                         return res.json({
-                            msg: 'link has been send',
+                            msg: 'link has been send to your mail.Valid only for an hour',
                             status: true,
                             code: 201
                         });

@@ -60,8 +60,9 @@ function _post (req, res, next) {
                 if(!student_data.exist || student_data.exist === undefined) {
 
                     const password = bycrpt.hashSync(req.body.password,4);
+                    console.log(student_data)
                     
-                    const heads_id = student_data.heads.split(',');
+                    const heads_id = student_data._id.indexOf(',') >0 ? student_data._id.split(',') : [student_data._id];
 
                     Students.find({
                         '_id': {
@@ -87,7 +88,7 @@ function _post (req, res, next) {
                             const new_student = Clubs({
                                 name : student_data.name,
                                 mail : student_data.mail,
-                                bio : 'WE ARE THE BEST IN THE COLLAGE',
+                                bio : 'WE ARE THE BEST IN THE COLLEGE BUT NEED A PROFILE UPDATE',
                                 password,
                                 heads,
                                 is_auth : true,

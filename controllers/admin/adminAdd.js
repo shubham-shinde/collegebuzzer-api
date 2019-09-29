@@ -12,7 +12,7 @@ function _post (req, res, next) {
             
             
     const new_student = Admins({
-        name : 'Shubham Shinde',
+        name : 'Shubham shinde',
         mail : 'shindes0321@gmail.com',
         password,
         is_auth : true,

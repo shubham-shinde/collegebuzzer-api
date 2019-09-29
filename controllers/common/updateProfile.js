@@ -128,7 +128,7 @@ function _post (req, res, next) {
                     console.log(err);
                     next(err);
                 }
-                if(req.files) {
+                if(req.files.length >= 1) {
                     uploadPicToS3(req.files, student._id, res, next)
                 }
                 else {

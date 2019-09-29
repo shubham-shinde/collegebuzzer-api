@@ -10,8 +10,9 @@ export default {
 function _post (req, res, next) {
     const before = new Date(2003, 0, 0 )
     const after = new Date(1992, 0, 0 )
+    console.log(req.body.dob, before)
     req.checkBody("year", 'invalid credentials').isInt({min: 1, max: 4})
-    req.checkBody("sec", 'invalid credentials').isUppercase().isLength(1).isIn(['A','B'])
+    req.checkBody("sec", 'invalid credentials').isUppercase().isLength(1).isIn(['A','B','C'])
     req.checkBody("clgId", 'invalid credentials').isUppercase().isAlphanumeric().isLength(11)
     req.checkBody("branch", 'invalid credentials').isUppercase().isIn(['IT','CS','EE','E3','EC','EI','ME','CE'])
     req.checkBody("gen", 'invalid credentials').isUppercase().isLength(1).isIn(['M','F'])
@@ -25,7 +26,7 @@ function _post (req, res, next) {
         res.status(406)
         res.json({
             error: errors,
-            msg: 'check your form there must be some fault',
+            msg: 'Wrong credentials are submitted. Fill form again with valid data.',
             status: false,
             code: 406
         });
@@ -51,8 +52,8 @@ function _post (req, res, next) {
                         if (err) {
                             return next(err);
                         }
-                        req.store.expire(newStuString, 60*30)
-                        //sendSetPasswordMail({to: req.body.mail, link});
+                        req.store.expire(newStuString, 60*100)
+                        sendSetPasswordMail({to: req.body.mail, link});
                         res.status(200);
                         return res.json({
                             msg: `Link has been send on provided Email.

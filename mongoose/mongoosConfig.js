@@ -13,6 +13,7 @@ const postschema = Schema({
     name: { type:String, required: true },
     p_pic : { type: String, required: true },
     n_pics: { type:Number, required: true },
+    n_videos: { type: Number },
     userIntro: { type: String }, 
     Id : { type: Schema.Types.ObjectId, ref: 'students' },
     text: { type: String },

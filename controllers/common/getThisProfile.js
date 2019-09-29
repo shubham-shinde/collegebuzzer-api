@@ -28,12 +28,14 @@ function _get (req, res, next) {
                 
         
                 const send_stu = {
+                    _id : club._id,
                     name : club.name,
                     theme : club.theme,
                     p_pic : club.p_pic,
                     heads : club.heads,
                     bio : club.bio,
-                    h_posts : club.h_posts
+                    h_posts : club.h_posts,
+                    role: 'club'
                 }
                 res.status(200)
                 res.json({
@@ -57,7 +59,8 @@ function _get (req, res, next) {
                 p_pic : student.p_pic,
                 userIntro : student.userIntro,
                 bio : student.bio,
-                h_posts : student.h_posts
+                h_posts : student.h_posts,
+                role : 'student'
             }
             res.status(200)
             res.json({

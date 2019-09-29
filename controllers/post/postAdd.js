@@ -16,6 +16,40 @@ function uploadPicToS3(files, name, res, next) {
     files.forEach((element, index) => {
         const NameOfPic = name+index;
         const NameOfPicPre = name+index+'pre'
+
+        if(element.mimetype === 'video/mp4') {
+            return fs.readFile(element.path,(err, pic) => {
+                const data = {Key: 'posts/'+NameOfPic+'.mp4', Body: pic};
+                s3Bucket.putObject(data, function(err, data){
+                if (err) 
+                    { 
+                        res.status(400)
+                        return res.json({
+                            msg: 'there is problem in server please try again.',
+                            status: true,
+                            code: 400
+                        })
+                    } 
+                    else {
+                        console.log('succesfully uploaded the video!');
+                        fs.unlink(element.path,() => console.log('deleted'))
+                        if(index+1 === files.length ) {
+                            res.status(200)
+                            return res.json({
+                                msg: 'post is saved',
+                                show_msg : {
+                                    h: 'Post Saved',
+                                    detail: 'Your post has been saved. Kindly refresh the window to see the post.'
+                                },
+                                status: true,
+                                code: 204
+                            })
+                        }
+                    }
+                });
+            })
+        }
+
         im.resize({
             srcPath: element.path,
             dstPath: element.desination+NameOfPic,
@@ -49,7 +83,7 @@ function uploadPicToS3(files, name, res, next) {
                         im.resize({
                             srcPath: element.path,
                             dstPath: element.desination+NameOfPicPre,
-                            width:   40
+                            width:   10
                         },
                         function(err, stdout, stderr){
                             if (err) {
@@ -120,12 +154,14 @@ function _post (req, res, next) {
             if(!student.p_pic) {
                 student.p_pic = AWS_S3_LINK+'profile/'+student._id+'.jpg'
             }
+            console.log(req.files);
             const new_post = STU_POSTS({
                 name : student.name,
                 Id : req.session.Id,
                 userIntro : student.userIntro,
                 text : post_data.text,
                 n_pics : req.files.length,
+                n_videos : req.files.reduce((sum, video) => video.mimetype==='video/mp4' ? sum+1 : sum , 0),
                 p_pic : student.p_pic,
                 likes : [],
                 is_auth : true,
@@ -145,12 +181,13 @@ function _post (req, res, next) {
                         next(err);
                     }
                     console.log(req.files)
-                    if(req.files.length >=1 ) {
-                        uploadPicToS3(req.files, post._id, res, next)
+                    if(req.files.length >= 1 ) {
+                        const filess = [...req.files.filter((item) => item.mimetype!=='video/mp4'), ...req.files.filter((item)=> item.mimetype==='video/mp4')]
+                        uploadPicToS3(filess, post._id, res, next)
                     }
                     else {
                         res.status(200)
-                        return res.json({
+                        res.json({
                             msg: 'post is saved',
                             show_msg : {
                                 h: 'Post Saved',
@@ -187,6 +224,7 @@ function _post (req, res, next) {
                 p_pic : club.p_pic,
                 text : post_data.text,
                 n_pics : req.files.length,
+                n_videos : req.files.reduce((sum, video) => video.mimetype==='video/mp4' ? sum+1 : sum , 0),
                 time : Date.now(),
                 likes : [],
                 is_auth : true,
@@ -206,11 +244,12 @@ function _post (req, res, next) {
                     }
                     console.log(req.files)
                     if(req.files.length >= 1) {
-                        uploadPicToS3(req.files, post._id,res, next)
+                        const filess = [...req.files.filter((item) => item.mimetype!=='video/mp4'), ...req.files.filter((item)=> item.mimetype==='video/mp4')]
+                        uploadPicToS3(filess, post._id,res, next)
                     }
                     else {
                         res.status(200)
-                        return res.json({
+                        res.json({
                             msg: 'post is saved',
                             show_msg : {
                                 h: 'Post Saved',

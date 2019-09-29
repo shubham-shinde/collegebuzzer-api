@@ -23,43 +23,26 @@ const session = (opts) => {
         const Id = user.Id;
         const role = user.role;
   
-        const sessionString = "fucked_up_students"+ Id ;
-  
         if (typeof (role) === undefined) {
           return next(new Error('role not found'));
         }
-  
-        req.store.hgetall(sessionString, function (err, value) {
-          if (err) {
-            return next(err);
-          }
-  
-          if(!value) {
-            res.status(400)
-            res.json({
-                msg: 'you should login again',
-                status: false,
-                code: 400
-            })
-          }
           if(role === ROLES[0]) {
             req.session = {};
             req.session.Id = Id;
             req.session.role = role;
-            req.session.year = value.year
-            req.session.branch = value.branch
-            req.session.mail = value.mail;
+            req.session.year = user.year
+            req.session.branch = user.branch
+            req.session.mail = user.mail;
             next();
           }
           else if (role === ROLES[1] || role === ROLES[2] || role === ROLES[3] ) {
             req.session = {};
             req.session.Id = Id;
             req.session.role = role;
-            req.session.mail = value.mail;
+            req.session.mail = user.mail;
             next();
           }
         });
-      });
     }
     else {
       res.json({

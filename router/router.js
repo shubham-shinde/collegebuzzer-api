@@ -31,9 +31,9 @@ export default function(app) {
     app.get('/getstuposts/:_id', postStuGet.get);
     app.get('/getclubposts/:_id', postClubGet.get);
     app.post('/addpost', postAdd.post);
-    app.post('/delpost/:_id', postDel.get);
-    app.post('/likepost/:_id', postLike.post);
-    //app.post('/gettheseposts', postGet.post);
+    app.get('/delpost/:_id', postDel.get);
+    app.post('/likepost', postLike.post);
+    app.post('/gettheseposts', postGet.post);
 
     //app.post('/validate', validate.post);
 
@@ -59,15 +59,15 @@ export default function(app) {
     //authanticaton routes.........................................................................
     app.get('/setpassword/student/:who', stuSetPass.get);
     app.post('/setpassword/student/:who', stuSetPass.post);
-    app.get('/resetpassword/student', stuResetPass.post);
+    app.post('/resetpassword/student', stuResetPass.post);
 
     app.get('/setpassword/club/:who', clubSetPass.get);
     app.post('/setpassword/club/:who', clubSetPass.post);
-    app.get('/resetpassword/club', clubResetPass.post);
+    app.post('/resetpassword/club', clubResetPass.post);
 
     app.get('/setpassword/guest/:who', guestSetPass.get); 
     app.post('/setpassword/guest/:who', guestSetPass.post);
-    app.get('/resetpassword/guest', guestResetPass.post);
+    app.post('/resetpassword/guest', guestResetPass.post);
     // app.post('/student/club', clubLogin.post);
 
 
