@@ -68,3 +68,12 @@ typings/
 
 # next.js build output
 .next
+
+#Ignore temp and swp files
+*~
+*.swp
+*.swo
+tags
+uploads
+
+
